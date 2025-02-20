@@ -1,0 +1,284 @@
+/* Minimal Custom CSS */
+
+/* Reset default body margins & padding */
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #f8f9fa; /* Subtle light-grey background (optional) */
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Constrain main content width and center it */
+.container {
+    max-width: 800px;
+    margin: 2rem auto; /* Top/Bottom spacing and centered horizontally */
+    padding: 1rem;
+    background-color: #ffffff; /* White background for the main content area */
+    border-radius: 0.25rem; /* Slightly rounded corners */
+}
+
+/* Basic spacing for top-level headings, paragraphs, and buttons */
+h1, h2, h3, h4, h5, h6,
+p,
+.btn {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+
+/* Utility for slightly customizing the Navbar (optional) */
+.navbar {
+    margin-bottom: 2rem; /* Space below navbar */
+}
+
+.main-content {
+    display: flex;
+    height: 80vh;
+}
+
+.text-section {
+    width: 500px;
+    float: left;
+    font-size: 4rem;
+    font-weight: bold;
+    align-items: center;
+    justify-content: center;
+}
+
+.logo-section {
+    width: 315px;
+    float: right;
+}
+
+.logo-section img {
+    height: auto;
+}
+
+.text-section h1 {
+    font-size: 8.75rem;
+    line-height: 1.1;
+}
+
+.content-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 1rem;
+    box-sizing: border-box;
+}
+
+#banner {
+    margin-top: 40px;
+    display: flex;           /* Activate flex layout */
+    align-items: stretch;    /* Children stretch to the same height */
+    /* If you want them to wrap on smaller screens:
+     flex-wrap: wrap; */
+}
+
+.harp-text {
+    color: #6EC4C6;
+}
+
+.wsu {
+    color: #981E32;
+}
+
+.syracuse {
+    color: #F76900;
+}
+
+.uic { 
+    color: #D50032;
+}
+
+#belowbanner {
+    font-size: 2rem;
+}
+
+#main-content .larger {
+    font-size: 1.2rem;
+}
+
+#main-content .medium {
+    font-size: 1.1rem;
+}
+
+#main-content .smaller {
+    font-size: .9rem;
+}
+
+#main-content li {
+    font-size: 1.2rem;
+}
+
+.logo-section img {
+    max-width: 100%;   /* ensures responsive image scaling */
+    height: auto;
+    display: block;
+    margin: 0 auto;    /* centers the logo horizontally */
+}
+
+// Professor cards
+/* 1. Make the entire section span the full viewport width */
+.professor-bios {
+    //width: 100%;
+    /* Optionally: a background color to separate from the rest of the page */
+    background-color: #f9f9f9;
+    /* Use Flexbox to line up the cards side by side */
+    display: flex;
+    justify-content: space-evenly; /* or space-between, space-around, etc. */
+    align-items: stretch;          /* ensures all cards are the same height if content varies */
+    //  padding: 2rem 1rem;           /* top/bottom, left/right padding */
+    box-sizing: border-box;
+    margin: 0; /* remove default margin if needed */
+}
+
+/* 2. Each card: flex child with some spacing */
+.professor-card {
+    height: 300px;
+    margin-right: 10px;
+    padding: 15px;
+    margin-top: 10px;
+    margin-bottom: 30px;
+    float:left;
+    flex:  1 240px;   /* each card is at least 250px wide, can grow if there's space */
+    max-width: 240px;  /* optional to prevent very wide stretching on large screens */
+    /* Optional style for visual effect */
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    padding: 1rem;
+    box-sizing: border-box;
+    /* Center the content if you like */
+    text-align: center;
+}
+
+#principal-investigators {
+    margin-bottom: 0px;
+}
+
+/* 3. Professor photo styling */
+.professor-photo {
+    height: 140px;       /* keep ratio or make a perfect circle */
+    object-fit: cover;   /* crops image to fill the area (if you like) */
+    border-radius: 50%;  /* makes the image circular */
+    margin-bottom: 0.5rem;
+}
+
+/* 4. Adjust headings, affiliation, specialties as needed */
+.professor-card h3 {
+    margin: 0.5rem 0 0.2rem; 
+    font-size: 1.2rem;
+}
+
+.professor-card .affiliation {
+    font-weight: bold;
+    color: #444;
+    margin: 0.3rem 0;
+}
+
+.specialties {
+    color: #666;
+    font-size: .8rem;
+}
+
+
+
+// Student Grid
+
+/* 
+ * 1) Base Grid: 4 columns on large screens
+ * Forces exactly 4 columns (no auto-fill).
+ */
+.people-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    padding: 1rem;
+    max-width: 1200px; /* optional max width; remove if you want full-bleed */
+    margin: 0 auto;    /* center if using max-width */
+    box-sizing: border-box;
+    background: #f8f8f8;
+}
+
+/* 
+ * 2) Person Card
+ * position: relative so we can overlay text on hover
+ */
+.person-card {
+    position: relative;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    overflow: hidden;
+    width: 145px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    display: inline-block;
+}
+
+/* 3) Photo (fill the card) */
+.person-photo {
+    width: 100%;
+    display: block; /* remove default inline spacing */
+}
+
+/* 
+ * 4) Hidden overlay with name/affiliation/link
+ */
+.person-info {
+    position: absolute;
+    inset: 0; /* top: 0; left: 0; bottom: 0; right: 0; */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0,0,0,0.6);
+    color: #fff;
+    text-align: center;
+
+    /* Initially hidden */
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    padding: 1rem;
+    box-sizing: border-box;
+}
+
+/* 5) Reveal overlay on hover */
+.person-card:hover .person-info {
+    opacity: 1;
+}
+
+/* 6) Basic text styling in overlay */
+.person-info h3 {
+    margin: 0.2rem 0;
+    font-size: 1.1rem;
+}
+.person-info p {
+    margin: 0.2rem 0 0.5rem 0;
+    font-size: 0.9rem;
+}
+.person-info a {
+    background-color: #fff;
+    color: #333;
+    padding: 0.4rem 0.8rem;
+    text-decoration: none;
+    border-radius: 3px;
+    font-size: 0.8rem;
+}
+.person-info a:hover {
+    background-color: #eee;
+}
+
+/* 
+ * 7) OPTIONAL: Responsive fallback if user wants fewer columns on small screens
+ * Remove or adjust if you *always* want 4 columns, no matter what.
+ */
+@media (max-width: 1024px) {
+    .people-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+@media (max-width: 600px) {
+    .people-grid {
+        grid-template-columns: 1fr;
+    }
+}
