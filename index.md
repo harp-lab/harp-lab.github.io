@@ -4,7 +4,7 @@ layout: default
 
 <p class="larger">Our research group is a joint collaboration between <span class="wsu">Washington State</span> (Thomas Gilray), <span class="uic">University of Illilnois at Chicago</span> (Sidharth Kumar), and <span class="syracuse">Syracuse</span> (Kristopher Micinski). Collectively, we and our students build the next-generation of analytic and semantic reasoning engines to tackle large-scale challenges in program analysis, security, formal methods, knowledge representation, and medical reasoning. </p>
 
-<p class="larger">We are generously support by grants from the US National Science Foundation, ARPA-H, and DARPA. We sincerely appreciate this crucial government support!</p>
+<p class="larger">We are supported by grants from the US National Science Foundation, ARPA-H, DARPA, and our collaboration with Argonne Leadership Computing Facility (ALCF). We sincerely appreciate this crucial government support!</p>
 
 <h1 id="principal-investigators">Principal Investigators</h1>
 
