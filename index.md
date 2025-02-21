@@ -75,12 +75,16 @@ layout: default
       {% endif %}
 	  <div class="person-info">
 		<h3>{{ student.name }}</h3>
-		<p>{{ student.affiliation }}</p>
+		<p>{{ student.affiliation }}, {{ student.rank }}</p>
 		<a href="{{ student.link }}" target="_blank">Webpage</a>
 	  </div>
 	</div>
   {% endfor %}
 </div>
+
+# Open-Source Software 
+
+
 
 # Publications
 
@@ -111,7 +115,7 @@ function showBib(evt) {
 			<a href="#" data-bib="{{publication.bibtex}}" onclick="showBib(event); return false;"><tt>[.bib]</tt></a>
 		{% endif %}
 		{% if publication.pdf %}
-		<a href="{{publication.pdf}}">[<img src="assets/paper-icon.svg" alt="GitHub Logo" style="vertical-align:middle; margin-right:0.4rem; max-height: 20px; margin-left: 4px; margin-right:1px; margin-left:0px;">
+		<a href="{{publication.pdf}}">[<img src="assets/paper-icon.svg" class="github" alt="GitHub Logo">
  Paper (PDF)]</a>
 	  {% endif %}
 		{% if publication.github %}
