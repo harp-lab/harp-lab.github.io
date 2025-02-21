@@ -1,16 +1,23 @@
 [
     {
-	"name": "Yihao Sun",
-	"affiliation": "Syracuse",
-	"image": "",
-	"link": "",
-	"rank": "PhD."
+        "name": "Yihao Sun",
+        "affiliation": "Syracuse",
+        "image": "https://stargazerm.github.io/images/me3.jpg",
+        "link": "https://stargazerm.github.io/",
+        "rank": "PhD."
     },
     {
         "name": "Chang Liu",
         "affiliation": "Syracuse",
         "image": "https://raw.githubusercontent.com/changliu98/changliu98.github.io/refs/heads/main/assets/img/2022.jpg",
         "link": "https://changliu98.github.io/",
+        "rank": "PhD"
+    },
+    {
+        "name": "Sowmith K",
+        "affiliation": "WSU",
+        "image": "assets/sowmithk.jpg",
+        "link": "https://sowmithk.com",
         "rank": "PhD"
     }
 ]
