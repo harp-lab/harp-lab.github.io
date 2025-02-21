@@ -287,6 +287,8 @@ article h4 {
 /* 3) Photo (fill the card) */
 .person-photo {
     width: 100%;
+    aspect-ratio: 1 / 1;  /* modern browsers: ensures a 1:1 ratio */
+    object-fit: cover;
     display: block; /* remove default inline spacing */
 }
 
