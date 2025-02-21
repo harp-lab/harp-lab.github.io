@@ -18,6 +18,10 @@
   {
       "name": "Ascent",
       "github": "https://github.com/s-arash/ascent"
+  },
+  {
+    "name": "Assemblage",
+    "github": "https://github.com/Assemblage-Dataset/Assemblage"
   }
 ]
 
