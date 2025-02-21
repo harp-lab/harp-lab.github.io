@@ -40,7 +40,7 @@ layout: default
 	{% for post in site.posts limit:5 %}
 		<li>
 			{% if post.type == "paper" %}
-				(<img src="assets/paper-icon.svg" alt="GitHub Logo" style="vertical-align:middle; margin-right:0.4rem; max-height: 20px; margin-left: 4px; margin-right:1px; margin-left:0px;"> New Paper!)
+				(<img src="assets/paper-icon.svg" alt="Paper!" style="vertical-align:middle; margin-right:0.4rem; max-height: 20px; margin-left: 4px; margin-right:1px; margin-left:0px;"> New Paper!)
 	        {% endif %}
 			<a href="{{ post.url | relative_url }}">{{ post.title }}</a>
 		</li>
@@ -82,9 +82,14 @@ layout: default
   {% endfor %}
 </div>
 
-# Open-Source Software 
+# Popular Repositories
 
 
+<div class="oss">
+  {% for project in site.data.projects %}
+	<a href="{{project.github}}">[<img src="assets/github-mark.svg" class="github" alt="GitHub Logo">{{ project.name}} ]</a>
+  {% endfor %}
+</div>
 
 # Publications
 
@@ -115,7 +120,7 @@ function showBib(evt) {
 			<a href="#" data-bib="{{publication.bibtex}}" onclick="showBib(event); return false;"><tt>[.bib]</tt></a>
 		{% endif %}
 		{% if publication.pdf %}
-		<a href="{{publication.pdf}}">[<img src="assets/paper-icon.svg" class="github" alt="GitHub Logo">
+		<a href="{{publication.pdf}}">[<img src="assets/github-mark.svg" class="github" alt="GitHub Logo">
  Paper (PDF)]</a>
 	  {% endif %}
 		{% if publication.github %}

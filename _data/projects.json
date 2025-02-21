@@ -1,0 +1,19 @@
+[
+  {
+    "name": "GDLog",
+    "github": "https://github.com/harp-lab/gdlog/"
+  },
+  {
+    "name": "Slog",
+    "github": "https://github.com/harp-lab/slog-lang1"
+  },
+  {
+    "name": "vflog",
+    "github": "https://github.com/harp-lab/vflog"
+  },
+  {
+    "name": "GraphWaGu",
+    "github": "https://github.com/harp-lab/GraphWaGu"
+  },
+]
+
