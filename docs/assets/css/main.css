@@ -142,6 +142,37 @@ article p {
     text-align: justify;
 }
 
+article h4 {
+    font-weight: 400;
+    line-height: 1;
+    float: left;
+}
+
+#dateauthor {
+    display: flex;
+}
+
+.dateauthor {
+    display: flex;
+    margin-top: 0px;
+    font-size: 1.2rem;
+}
+
+.separator {
+  font-size: 1.2rem;
+  color: #6EC4C6;
+  display: inline-block; /* Treat the diamond as an inline-block element */
+  line-height: 1;        /* Ensures it sits closer to the text baseline */
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+
+#author {
+    margin-bottom: 0px;
+    margin-right: 20px;
+}
+
 // Professor cards
 /* 1. Make the entire section span the full viewport width */
 .professor-bios {
