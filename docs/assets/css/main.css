@@ -137,6 +137,10 @@ p,
     font-size: 1.2rem;
 }
 
+article p {
+    font-size: 1.2rem;
+    text-align: justify;
+}
 
 // Professor cards
 /* 1. Make the entire section span the full viewport width */
