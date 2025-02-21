@@ -117,6 +117,27 @@ p,
     margin: 0 auto;    /* centers the logo horizontally */
 }
 
+.blog-top {
+    margin-left: 0px;
+    overflow: hidden; /* add this to contain floated children */
+    display: flex;
+    align-items: center;
+}
+
+.blog-top img {
+    height: 50px;
+    //margin: 0 auto;
+    margin-bottom: 20px;
+    float:left;
+}
+
+.blog-top h1 {
+    float:left; 
+    margin-left: 20px;
+    font-size: 1.2rem;
+}
+
+
 // Professor cards
 /* 1. Make the entire section span the full viewport width */
 .professor-bios {
