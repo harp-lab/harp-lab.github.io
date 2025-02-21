@@ -42,8 +42,11 @@ window.MathJax = {
 	    {% endif %}
 	    {{ page.title }}
 	  </h1>
-	  <h4>Date: {{ page.thedate }}</hr>
-	  <h4>By: {{ page.author }}</h4>
+	  <div id="dateauthor">
+	    <h4 class="dateauthor">{{ page.thedate }}</h4>
+	    <span class="separator">✦</span>
+	    <h4 class="dateauthor" id="author">Author: {{ page.author }}</h4>
+	   </div>
 	  {{ content }} 
         </article>
       </div>
