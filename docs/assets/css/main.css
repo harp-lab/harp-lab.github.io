@@ -127,8 +127,12 @@ p,
 .blog-top img {
     height: 50px;
     //margin: 0 auto;
-    margin-bottom: 4px;
+    margin-bottom: 5px;
     float:left;
+}
+
+.post-title {
+    font-weight: 500;
 }
 
 .blog-top h1 {
