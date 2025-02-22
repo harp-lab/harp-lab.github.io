@@ -26,5 +26,12 @@
         "image": "https://kokofan16.github.io/assets/img/profile.jpg",
         "link": "https://kokofan16.github.io/",
         "rank": "PhD"
+    },
+    {
+        "name": "Ahmedur Rahman Shovon",
+        "affiliation": "UIC",
+        "image": "https://arshovon.com/assets/images/shovon.png",
+        "link": "https://arshovon.com/",
+        "rank": "PhD"
     }
 ]
