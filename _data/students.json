@@ -19,5 +19,12 @@
         "image": "assets/sowmithk.jpg",
         "link": "https://sowmithk.com",
         "rank": "PhD"
+    },
+    {
+        "name": "Ke Fan",
+        "affiliation": "UIC",
+        "image": "https://kokofan16.github.io/assets/img/profile.jpg",
+        "link": "https://kokofan16.github.io/",
+        "rank": "PhD"
     }
 ]
