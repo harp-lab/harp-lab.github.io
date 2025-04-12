@@ -1,2 +1,5 @@
 _site/
 _site/assets
+.DS_Store
+Gemfile.lock
+# Gemfile
