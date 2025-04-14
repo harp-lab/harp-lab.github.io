@@ -43,7 +43,7 @@ window.MathJax = {
 	   </div>
 	  <p><strong>Abstract</strong></p>
 
-<p>Conjunctive Query (CQ) is a critical operation in OLAP databases. In this article, we examine traditional CQ processing methods, focusing on binary join techniques, and discuss their limitations when scaling to multi-relation queries and complex patterns. We introduce several binary join processing models and analyze the trade-offs between parallelism and memory usage. Furthermore, we discuss the size bound of CQ, explaining why pure join planning may have bad worst case behavior, and we then exploring Worst-Case Optimal Join (WCOJ) methods and their variants. Finally, we give a introduction on free join, a unified theoretical framework for CQ processing.</p>
+<p>Conjunctive Query (CQ) is a critical operation in OLAP databases. In this article, we examine traditional CQ processing methods, starting from binary join techniques, and discuss their limitations when scaling to multi-relation queries and complex patterns. We introduce several binary join processing models and analyze the trade-offs between parallelism and memory usage. Furthermore, we discuss the size bound of CQ, explaining why pure join planning may have bad worst case behavior, and we then exploring Worst-Case Optimal Join (WCOJ) methods and their variants. Finally, we give a introduction on free join, a unified theoretical framework for CQ processing.</p>
 
 <p><strong>Keywords</strong>: Conjunctive Query, Binary Join, Worst-Case Optimal Join, Free Join</p>
 
@@ -62,13 +62,14 @@ window.MathJax = {
 <p>Efficient join algorithms are crucial for quickly processing conjunctive queries. When a CQ involves only two relations, traditional binary join algorithms, such as hash join and sort-merge join, can be applied directly. For example, consider the foobar query mentioned above. A hash join implementation in pseudocode might look like this:</p>
 
 <div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">for</span> <span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span> <span class="k">in</span> <span class="n">foo</span> <span class="p">{</span>
-	<span class="k">for</span> <span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span> <span class="k">in</span> <span class="n">bar</span><span class="p">[</span><span class="n">b</span><span class="p">]</span> <span class="p">{</span> <span class="c1">// bar indexed on the column named "b"</span>
+	<span class="k">let</span> <span class="n">bar_rows</span> <span class="o">=</span> <span class="n">bar</span><span class="p">[</span><span class="n">b</span><span class="p">];</span>
+	<span class="k">for</span> <span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span> <span class="k">in</span> <span class="n">bar_rows</span> <span class="p">{</span> <span class="c1">// bar indexed on the column named "b"</span>
 		<span class="n">foobar</span><span class="nf">.insert</span><span class="p">((</span><span class="n">a</span><span class="p">,</span> <span class="n">c</span><span class="p">));</span>
 	<span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div></div>
 
-<p>Here, we first build a hash map on the column b in the bar relation, which maps each b value to all tuples sharing that value. Then, we scan through all tuples in the foo relation; for each tuple, we search bar’s hash map based on its b value. For every matching tuple in bar, we project and construct a new tuple for the foobar relation.</p>
+<p>We first build a hash map on the column <code class="language-plaintext highlighter-rouge">b</code> in the bar relation, which maps each b value to all corresponding tuples. Next, we scan through the tuples in the <code class="language-plaintext highlighter-rouge">foo</code> relation; for each tuple in <code class="language-plaintext highlighter-rouge">foo</code>, we query bar’s hash map using its b value, thereby retrieving and materializing all matching tuples from bar into <code class="language-plaintext highlighter-rouge">bar_rows</code>. Finally, for each tuple in <code class="language-plaintext highlighter-rouge">bar_rows</code>, we project and construct a new <code class="language-plaintext highlighter-rouge">foobar</code> tuple.</p>
 
 <ul>
   <li>
@@ -78,7 +79,7 @@ window.MathJax = {
   </li>
 </ul>
 
-<p>However real-world CQs usually consist of multiple input relations. For example considering following CQ:</p>
+<p>Real-world CQs usually consist of multiple input relations. For example considering following CQ:</p>
 
 <div class="language-prolog highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="ss">foobar</span><span class="p">(</span><span class="ss">a</span><span class="p">,</span> <span class="ss">c</span><span class="p">,</span> <span class="ss">d</span><span class="p">)</span> <span class="p">:-</span> <span class="ss">foo</span><span class="p">(</span><span class="ss">a</span><span class="p">,</span> <span class="ss">b</span><span class="p">),</span> <span class="ss">bar</span><span class="p">(</span><span class="ss">b</span><span class="p">,</span> <span class="ss">c</span><span class="p">),</span> <span class="ss">baz</span><span class="p">(</span><span class="ss">a</span><span class="p">,</span> <span class="ss">d</span><span class="p">).</span>
 </code></pre></div></div>
@@ -89,20 +90,24 @@ window.MathJax = {
 
 <div class="language-rust highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">tmp</span> <span class="o">=</span> <span class="nd">vec!</span><span class="p">[];</span>
 <span class="k">for</span> <span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span> <span class="k">in</span> <span class="n">foo</span> <span class="p">{</span>
-	<span class="k">for</span> <span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span> <span class="k">in</span> <span class="n">bar</span><span class="p">[</span><span class="n">a</span><span class="p">]</span> <span class="p">{</span>
+	<span class="k">let</span> <span class="n">bar_rows</span> <span class="o">=</span> <span class="n">bar</span><span class="p">[</span><span class="n">a</span><span class="p">];</span>
+	<span class="k">for</span> <span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span> <span class="k">in</span> <span class="n">bar_rows</span> <span class="p">{</span>
 		<span class="n">tmp</span><span class="nf">.insert</span><span class="p">((</span><span class="n">a</span><span class="p">,</span><span class="n">c</span><span class="p">));</span>
 	<span class="p">}</span>
 <span class="p">}</span>
 <span class="k">for</span> <span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span> <span class="k">in</span> <span class="n">tmp</span> <span class="p">{</span>
-	<span class="k">for</span> <span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span> <span class="k">in</span> <span class="n">baz</span><span class="p">[</span><span class="n">a</span><span class="p">]</span> <span class="p">{</span>
+	<span class="k">let</span> <span class="n">baz_rows</span> <span class="o">=</span> <span class="n">baz</span><span class="p">[</span><span class="n">a</span><span class="p">];</span>
+	<span class="k">for</span> <span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span> <span class="k">in</span> <span class="n">baz_rows</span> <span class="p">{</span>
 		<span class="n">foobar</span><span class="nf">.insert</span><span class="p">((</span><span class="n">a</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="n">d</span><span class="p">));</span>
 	<span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div></div>
 
+<p>In this processing model, the primary computational effort lies in executing nested loops. The memory overhead mainly originates from two parts: the temporary buffer <code class="language-plaintext highlighter-rouge">tmp</code> used to materialize the intermediate join, as well as the arrays <code class="language-plaintext highlighter-rouge">bar_rows/baz_rows</code> created inside the loops to materialize the projected tuples.</p>
+
 <h3 id="join-plan">Join Plan</h3>
 
-<p>It is easy to notice that, besides joining foo and bar first, alternative join orders exist for processing the three-way join. For example, one can decompose the query into two intermediate joins—computing $(\textit{foo} \bowtie_{b} \textit{bar})$ and $(\textit{foo} \bowtie_{a} \textit{baz})$ separately—and then joining these intermediate results. These decompositions are known as binary join plans, which break a k-way join into a sequence of binary joins.</p>
+<p>Besides joining foo and bar first, alternative join orders exist for processing the three-way join. For example, we can decompose the query into two intermediate joins—computing $(\textit{foo} \bowtie_{b} \textit{bar})$ and $(\textit{foo} \bowtie_{a} \textit{baz})$ separately—and then joining these intermediate results. These decompositions are known as binary join plans, which break a k-way join into a sequence of binary joins.</p>
 
 <p>A common isomorphism is treat each relation as node, shared logic variables as edges, then these different ways of join will form different type of graphs. The first ad-hoc sequential plan forms a left-deep tree (called left-deep linear plan), while the alternative plan forms a more branched structure called a <em>bushy plan</em>.</p>
 
@@ -127,23 +132,25 @@ window.MathJax = {
 <span class="p">}</span>
 </code></pre></div></div>
 
-<p>This style of join processing is also named <em>volcano</em> <a class="citation" href="#graefe1993volcano">(Graefe and McKenna)</a> or <em>iterator model</em> <a class="citation" href="#palvo2024multiway">(Palvo)</a>  in some other literatures.</p>
+<p>This pipelined model relies on a data structure that supports range probing on all tuples sharing the same join attribute value(such as a hash map, B-tree, or trie) combined with pointer-like access to an internal subset of the relation via an iterator design pattern. This processing model was firsted introduced in a database optimization system called <em>Volcano</em> <a class="citation" href="#graefe1993volcano">(Graefe and McKenna)</a>, therefore also known as <em>volcano</em>  or <em>iterator model</em> <a class="citation" href="#palvo2024multiway">(Palvo)</a>  in some other literatures.</p>
 
 <p>In addition to its efficient memory usage, the pipelining model can be readily accelerated on multicore CPUs. To enhance pipelined processing, the workload can be divided based on the outermost loop. By evenly partitioning the tuples in foo across available threads, each thread processes a subset concurrently, thereby boosting overall performance.</p>
 
 <h3 id="data-skew">Data Skew</h3>
 
-<p>While the pipelining model is parallelizable, it can failed scale when <em>data skew</em>  occurs. For instance, in a large social media graph, some influential nodes may have hundreds of times more followers than other nodes. When such a graph serves as the outer relation in a multi-input relation CQ, the thread processing the influential node will have to handle significantly more work compared to threads processing less-connected nodes. This imbalance can lead to thread idle.</p>
+<p>However, <em>data skew</em> may cause the scaling problem in a pipelined model. For instance, in a large social media graph, some influential nodes may have hundreds of times more followers than other nodes. When such a graph serves as the outer relation in a multi-input relation CQ, the thread processing the influential node will have to handle significantly more work compared to threads processing less-connected nodes.</p>
 
 <p><img src="/assets/blog/wcoj/idle.png" alt="Thread idle" width="70%" /></p>
 
-<p>This imbalance in k-way joins makes it difficult to scale pipelined join operations on massively parallel hardware and hinders adaptation to SIMD-based architectures, such as GPUs and AVX-supported CPUs.</p>
+<p>For example, in the figure above, many edge tuples share the indexed value 2. As a result, the outer-most relation tuples such as <code class="language-plaintext highlighter-rouge">(2,4)</code> and <code class="language-plaintext highlighter-rouge">(2,9)</code>, processed by threads $T_0$, need to join three tuples sharing the join attribute value 2. Consequently, in the inner loop of the pipelined model (illustrated on the right side of the figure), thread $T_0$ must continue processing join. Meanwhile, threads $T_{n-1}$ and $T_n$ remain mostly idle in the inner loop because the outer tuples they scan have no matching inner tuples.</p>
+
+<p>This imbalance in join processing makes it difficult to scale pipelined join operations on massively parallel hardware and hinders adaptation to SIMD-based architectures, such as GPUs and AVX-supported CPUs.</p>
 
 <p>Recalling the first temporary materialization approach we discussed, while it does incur extra memory overhead, the key advantage is that the scanning loops over foo and the temporary result (tmp) operate independently. This decoupling means that even if data skew occurs in foo, it doesn’t disproportionately load any single thread during the scan over tmp. As a result, the overall workload is more evenly balanced across threads, minimizing the risk of thread idling due to uneven data distribution. And thus this materialization approach adopted by some GPU/supercomputer based parallel CQ query engines.</p>
 
 <h3 id="vectorization">Vectorization</h3>
 
-<p>Vectorization is an intermediate approach that combines the benefits of pipelining and full materialization. Instead of materializing every intermediate tuple, vectorized processing handles only a limited number of tuples at a time, grouping them into batches. It also maintains a pointer to track the remaining tuples that need to be processed. Once the current batch is completed, processing resumes from where the previous batch left off. This approach helps reduce memory overhead while still enabling efficient batch processing and improved cache utilization.</p>
+<p>Vectorization is an intermediate approach that combines the benefits of pipelining and full materialization. Instead of materializing every intermediate tuple, vectorized processing handles only a limited number of tuples at a time, grouping them into batches. Similar to pipelining, it relies on data structures that support range probing; however, each move of the iterator now returns a batch of tuples instead of a single tuple. This approach helps reduce memory overhead while still enabling efficient batch processing and improved cache utilization.</p>
 
 <p>In pseudo code:</p>
 
@@ -176,7 +183,7 @@ window.MathJax = {
 <span class="p">}</span>
 </code></pre></div></div>
 
-<p>Using a fixed-size temporary buffer allows vectorized processing to control memory overhead effectively. In this model, the join operations for foo ⋈ₐ bar and tmp ⋈ₐ gez are decoupled, so workload balance is maintained, and each operation does not adversely affect the other. The pre-allocated fixed-size buffer also enables lock-free access, avoiding the need for a locking parallel append operation on a dynamically sized vector.</p>
+<p>Using a fixed-size temporary buffer allows vectorized processing to control memory overhead effectively. In this model, the join operations for $\textit{foo} \bowtie_{b} \textit{bar}$ and $\textit{tmp} \bowtie_{a} \textit{gez}$ are decoupled, so workload balance is maintained, and each operation does not adversely affect the other. The pre-allocated fixed-size buffer also enables lock-free access, avoiding the need for a locking parallel append operation on a dynamically sized vector.</p>
 
 <p>Despite these benefits, for architectures such as SIMD/SIMT where each thread must execute the same (or nearly the same) amount of work, above processing approach may still be insufficiently balanced. For example, in GPU-based databases, the inner loops of the parallel pfor constructs can experience varying workloads when data is severely skewed. Recent work (see <a class="citation" href="#lai2022accelerating">(Lai et al.)</a>) suggests that fixing the batch size to be similar to the thread count and allowing each thread to return as soon as all threads have found at least one matching tuple in the join could help address this imbalance when executed on datacenter GPUs.</p>
 
@@ -214,7 +221,7 @@ window.MathJax = {
   </li>
 </ul>
 
-<p>Above analysis suggests that, in the worst case, the effective size bound of a CQ is determined less by the number of database rows and more by the number of distinct values in individual columns of the candidate relations. If cardinality estimation indicates that unique column values are significantly fewer than row numbers, instead of purely processing CQs by pure join planning (which leads to a suboptimal bound), we can use select-join planning to obtain better worst-case performance.</p>
+<p>Therefore, the optimal join processing strategy for a triangle query should focus on processing only the unique values of <code class="language-plaintext highlighter-rouge">a</code> and <code class="language-plaintext highlighter-rouge">c</code> in <code class="language-plaintext highlighter-rouge">foo</code> and <code class="language-plaintext highlighter-rouge">baz</code>. In contrast, row-wise join processing tends to repeatedly handle different rows that share the same <code class="language-plaintext highlighter-rouge">a</code> and <code class="language-plaintext highlighter-rouge">c</code> values, particularly when data skew is present. This observation indicates that, to reach the optimal bound, it is necessary to abandon row-wise join processing in favor of a column-wise approach, which enables rapid selection of all unique column values involved in the query.</p>
 
 <h3 id="agm-bound">AGM Bound</h3>
 
@@ -353,7 +360,7 @@ Below is a concrete example illustrating the algorithm’s operation. Initially,
 
 <h2 id="whats-next-">What’s Next ?</h2>
 
-<p>In this article, we have explored a wide range of processing algorithms for conjunctive queries, but most of them only run on single CPU system—especially worst-case optimal join techniques. However, scaling these methods to parallel processing environments remains a complex and open research question. Recent work on adapting worst-case optimal joins to parallel hardware (see <a class="citation" href="#wu2025honeycomb">(Wu and Suciu)</a> <a class="citation" href="#lai2022accelerating">(Lai et al.)</a>) shows promising directions, though none of these approaches have matured for use in real-world databases. I look forward to discussing these developments and sharing my thoughts on parallelizing conjunctive query processing in future blog articles.</p>
+<p>In this article, we have explored a wide range of processing algorithms for conjunctive queries, but most of them only run on single CPU system—especially worst-case optimal join techniques. However, scaling these methods to parallel processing environments remains a complex and open research question. Recent work on adapting worst-case optimal joins to parallel hardware (see <a class="citation" href="#wu2025honeycomb">(Wu and Suciu)</a> <a class="citation" href="#lai2022accelerating">(Lai et al.)</a>) shows promising directions, though none of these approaches have matured for use in real-world databases. Besides this article, a recent extensive survey is <a class="citation" href="#koutris2025quest">(Koutris et al.)</a>, please check it out for more details on conjunctive query processing. I am also looking forward to discussing these developments and sharing my thoughts on parallelizing conjunctive query processing in future blog articles.</p>
 
 <h2 id="reference">Reference</h2>
 <ol class="bibliography"><li><span id="cqwiki">Wikipedia. <i>Conjunctive Query</i>. 2024, https://en.wikipedia.org/wiki/Conjunctive_query.</span></li>
@@ -364,25 +371,8 @@ Below is a concrete example illustrating the algorithm’s operation. Initially,
 <li><span id="abadi2013design">Abadi, Daniel, et al. “The Design and Implementation of Modern Column-Oriented Database Systems.” <i>Foundations and Trends&amp;#0174 in Databases</i>, vol. 5, no. 3, 2013, pp. 197–280.</span></li>
 <li><span id="veldhuizen2014leapfrog">Veldhuizen, Todd L. “Leapfrog Triejoin: A Simple, Worst-Case Optimal Join Algorithm.” <i>Proc. International Conference on Database Theory</i>, 2014.</span></li>
 <li><span id="wang2023free">Wang, Yong Rong, et al. “Free Join: Unifying Worst-Case Optimal and Traditional Joins.” <i>Proceedings of the ACM on Management of Data</i>, vol. 1, no. 2, 2023, pp. 1–23.</span></li>
-<li><span id="wu2025honeycomb">Wu, Jiacheng, and Dan Suciu. “HoneyComb: A Parallel Worst-Case Optimal Join on Multicores.” <i>ArXiv Preprint ArXiv:2502.06715</i>, 2025.</span></li></ol>
-<!-- Lecture Note of Andy Palvo on Multi-Way Join Algorithm  https://15721.courses.cs.cmu.edu/spring2024/notes/10-multiwayjoins.pdf
-Lecture Note of Paris Koutris on Size Bounds for Joins https://pages.cs.wisc.edu/~paris/cs838-s16/lecture-notes/lecture6.pdf
-
-Lecture Note of Joe Hellerstein https://cs286berkeley.net/Lecture%2011%20Freejoin
-
-Abadi, D., Boncz, P., Harizopoulos, S., Idreos, S., & Madden, S. 
-(2013). The design and implementation of modern column-oriented database
- systems. *Foundations and Trends® in Databases*, *5*(3), 197-280.
-
-Atserias, A., Grohe, M., & Marx, D. (2013). Size bounds and query plans for relational joins. *SIAM Journal on Computing*, *42*(4), 1737-1767. https://arxiv.org/pdf/1711.03860
-
-Ngo, H. Q., Porat, E., Ré, C., & Rudra, A. (2018). Worst-case optimal join algorithms. *Journal of the ACM (JACM)*, *65*(3), 1-40. https://pages.cs.wisc.edu/~chrisre/papers/paper49.Ngo.pdf
-
-Ngo, H. Q., Ré, C., & Rudra, A. (2014). Skew strikes back: new developments in the theory of join algorithms. *Acm Sigmod Record*, *42*(4), 5-16. https://arxiv.org/pdf/1310.3314
-
-Wang, Y. R., Willsey, M., & Suciu, D. (2023). Free join: Unifying worst-case optimal and traditional joins. *Proceedings of the ACM on Management of Data*, *1*(2), 1-23. https://arxiv.org/pdf/2301.10841
-
-Veldhuizen, T. L. (2014, March). Leapfrog triejoin: A simple, worst-case optimal join algorithm. In *Proc. International Conference on Database Theory*. http://arxiv.org/abs/1210.0481 -->
+<li><span id="wu2025honeycomb">Wu, Jiacheng, and Dan Suciu. “HoneyComb: A Parallel Worst-Case Optimal Join on Multicores.” <i>ArXiv Preprint ArXiv:2502.06715</i>, 2025.</span></li>
+<li><span id="koutris2025quest">Koutris, Paraschos, et al. “The Quest for Faster Join Algorithms (Invited Talk).” <i>28th International Conference on Database Theory (ICDT 2025)</i>, Schloss Dagstuhl–Leibniz-Zentrum für Informatik, 2025, pp. 1–1.</span></li></ol>
 
  
         </article>
