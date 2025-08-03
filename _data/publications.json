@@ -24,7 +24,7 @@
 		"github": "https://github.com/Assemblage-Dataset/Assemblage"
 	},
     {
-	"plaintext": "Towards Iterative Relational Algebra on the GPU (USENIX ATC '25). Authored by Ahmedur Rahman Shovon, Thomas Gilray, Kristopher Micinski, and Sidharth Kumar.",
+	"plaintext": "Towards Iterative Relational Algebra on the GPU (USENIX ATC '23). Authored by Ahmedur Rahman Shovon, Thomas Gilray, Kristopher Micinski, and Sidharth Kumar.",
 	"bibtex": "QGlucHJvY2VlZGluZ3N7c2hvdm9uMjAyM3Rvd2FyZHMsCiAgdGl0bGU9e1Rvd2FyZHMgaXRlcmF0aXZlIHJlbGF0aW9uYWwgYWxnZWJyYSBvbiB0aGUgJFx7JEdQVSRcfSR9LAogIGF1dGhvcj17U2hvdm9uLCBBaG1lZHVyIFJhaG1hbiBhbmQgR2lscmF5LCBUaG9tYXMgYW5kIE1pY2luc2tpLCBLcmlzdG9waGVyIGFuZCBLdW1hciwgU2lkaGFydGh9LAogIGJvb2t0aXRsZT17MjAyMyBVU0VOSVggQW5udWFsIFRlY2huaWNhbCBDb25mZXJlbmNlIChVU0VOSVggQVRDIDIzKX0sCiAgcGFnZXM9ezEwMDktLTEwMTZ9LAogIHllYXI9ezIwMjN9Cn0=",
 	"pdf": "https://arshovon.com/publications/USENIXATC_2023.pdf",
 	"github": "https://github.com/harp-lab/usenixatc23"
