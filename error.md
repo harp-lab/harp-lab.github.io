@@ -1,6 +1,6 @@
 ---
 title: "Some Weird Error, idk"
-layout: default
+layout: post
 permalink: /error.html
 ---
 
