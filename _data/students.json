@@ -2,15 +2,15 @@
     {
         "name": "Yihao Sun",
         "affiliation": "Syracuse",
-        "image": "https://stargazerm.github.io/images/me3.jpg",
-        "link": "https://stargazerm.github.io/",
-        "rank": "PhD."
+        "image": "assets/yihaosun.jpg",
+        "link": "https://stargazerm.github.io",
+        "rank": "PhD"
     },
     {
         "name": "Chang Liu",
         "affiliation": "Syracuse",
-        "image": "https://raw.githubusercontent.com/changliu98/changliu98.github.io/refs/heads/main/assets/img/2022.jpg",
-        "link": "https://changliu98.github.io/",
+        "image": "assets/changliu.jpg",
+        "link": "https://liuchang.us",
         "rank": "PhD"
     },
     {
@@ -23,15 +23,15 @@
     {
         "name": "Ke Fan",
         "affiliation": "UIC",
-        "image": "https://kokofan16.github.io/assets/img/profile.jpg",
-        "link": "https://kokofan16.github.io/",
+        "image": "assets/kefan.jpg",
+        "link": "https://kokofan16.github.io",
         "rank": "PhD"
     },
     {
         "name": "Ahmedur Rahman Shovon",
         "affiliation": "UIC",
-        "image": "https://arshovon.com/assets/images/shovon.png",
-        "link": "https://arshovon.com/",
+        "image": "assets/ahmedurshovon.png",
+        "link": "https://arshovon.com",
         "rank": "PhD"
     }
 ]
