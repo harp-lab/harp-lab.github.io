@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="{{ site.lang | default: 'en-US' }}">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ page.title }} </title>
+
+
+    <link rel="stylesheet" href="{{ '/assets/fonts/poppins/poppins.css' | relative_url }}">
+
+    <!-- Make sure this path points to the correct CSS location -->
+    <link rel="stylesheet" href="{{ '/assets/css/main.css' | relative_url }}">
+  </head>
+  <body>
+    <div class="content-container">
+      <div id="main-content">
+	<div class="blog-top">
+	  <a href="/"><img src="{{ '/assets/logo.svg' | relative_url }}" alt="HARP Lab Logo"></a>
+	  <!-- <h1>The <span class="harp-text">HARP</span> Lab</h1> -->
+	</div>
+	<article>
+	  <h1 class="post-title">
+	    {% if page.type == "paper" %}
+	    (<img src="/assets/paper-icon.svg" alt="GitHub Logo" style="vertical-align:middle; margin-right:0.4rem; max-height: 20px; margin-left: 4px; margin-right:1px; margin-left:0px;"> New Paper!)
+	    {% endif %}
+	    {{ page.title }}
+	  </h1>
+	  {{ content }} 
+        </article>
+      </div>
+    </div>
+  </body>
+</html>
